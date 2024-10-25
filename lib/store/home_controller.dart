@@ -16,6 +16,6 @@ abstract class _HomeControllerBase with Store {
 
   @action
   void setPalavra(String novaPalavra) {
-    palavra = novaPalavra;
+    palavra = novaPalavra.trim();
   }
 }
