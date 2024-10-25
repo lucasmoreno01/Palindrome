@@ -51,9 +51,10 @@ class _HomePageState extends State<HomePage> {
                 IconButton(
                   onPressed: () {
                     setState(() {
-                      palavra = textController.text;
+                      String inputText = textController.text.trim(); // remover espaços no inicio e no fim
+                      palavra = inputText.isNotEmpty ? inputText : '';
+                      textController.clear();
                     });
-                    debugPrint(textController.text);
                   },
                   icon: const Icon(Icons.add),
                 )
@@ -68,7 +69,6 @@ class _HomePageState extends State<HomePage> {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("${palavra.length} letras"),
                       Text("Invertida: ${inverterPalavra(palavra)}"),
                       Text(
                         isPalindrome(palavra)
