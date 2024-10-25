@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:palindrome/store/home_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,17 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController textController = TextEditingController();
-  String palavra = '';
-
-  // Inverter palavra
-  String inverterPalavra(String palavra) {
-    return palavra.split('').reversed.join('');
-  }
-
-  bool isPalindrome(String word) {
-    return word.toLowerCase() == inverterPalavra(word).toLowerCase();
-  }
+  final HomeController controller = HomeController();
+  final TextEditingController textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,34 +43,35 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(width: 20),
                 IconButton(
                   onPressed: () {
-                    setState(() {
-                      palavra = textController.text;
-                    });
-                    debugPrint(textController.text);
+                    controller.setPalavra(textController.text);
                   },
                   icon: const Icon(Icons.add),
                 )
               ],
             ),
             const SizedBox(height: 20),
-            Text(
-              palavra,
-              style: const TextStyle(fontSize: 18),
+            Observer(
+              builder: (_) => Text(
+                controller.palavra,
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-            palavra.isNotEmpty
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("${palavra.length} letras"),
-                      Text("Invertida: ${inverterPalavra(palavra)}"),
-                      Text(
-                        isPalindrome(palavra)
-                            ? '$palavra é um palíndromo'
-                            : '$palavra não é um palíndromo',
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
+            Observer(
+              builder: (_) => controller.palavra.isNotEmpty
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${controller.palavra.length} letras"),
+                        Text("Invertida: ${controller.palavraInvertida}"),
+                        Text(
+                          controller.isPalindrome
+                              ? '${controller.palavra} é um palíndromo'
+                              : '${controller.palavra} não é um palíndromo',
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),
